@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +80,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -142,6 +144,11 @@ MEDIA_URL = '/media/'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+]
+
 
 
 

@@ -22,9 +22,9 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
     name = models.CharField(max_length=100)
-    no_ktp = models.CharField(max_length=16)
-    phone = models.CharField(max_length=15)
-    job = models.CharField(max_length=100)
+    no_ktp = models.CharField(max_length=16, null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    job = models.CharField(max_length=100, null=True, blank=True)
     address = models.OneToOneField(Address, on_delete=models.CASCADE)
     finance = models.OneToOneField(Finance, on_delete=models.CASCADE)
     photoProfile = models.ImageField(upload_to='profilePictures/', null=True, blank=True)
