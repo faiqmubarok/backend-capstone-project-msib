@@ -7,8 +7,9 @@ from ..serializers.registerSerializer import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from ..serializers.loginSerializer import LoginSerializer
 from ..models.userModel import UserProfile
-
 from django.contrib.auth.models import User
+
+from ..serializers.updateSerializer import UserProfileSerializer, AddressSerializer, FinanceSerializer
 
 @api_view(['POST'])
 def register(request):
@@ -103,3 +104,39 @@ def getUser(request, userId):
             {"detail": "Pengguna tidak ditemukan."},
             status=status.HTTP_404_NOT_FOUND
         )
+
+@csrf_exempt
+@api_view(['PUT', 'PATCH'])
+def updateUser(request, userId):
+    try:
+        user_profile = UserProfile.objects.get(user_id=userId)
+
+        address_data = request.data.get('address', None)
+        finance_data = request.data.get('finance', None)
+
+        # Jika ada data address, update atau buat address baru
+        if address_data:
+            address_serializer = AddressSerializer(user_profile.address, data=address_data, partial=True)
+            if address_serializer.is_valid():
+                address_serializer.save()
+            else:
+                return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Jika ada data finance, update atau buat finance baru
+        if finance_data:
+            finance_serializer = FinanceSerializer(user_profile.finance, data=finance_data, partial=True)
+            if finance_serializer.is_valid():
+                finance_serializer.save()
+            else:
+                return Response(finance_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Memproses user_profile
+        user_profile_serializer = UserProfileSerializer(user_profile, data=request.data, partial=True)
+        if user_profile_serializer.is_valid():
+            user_profile_serializer.save()
+            return Response(user_profile_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(user_profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    except UserProfile.DoesNotExist:
+        return Response({'detail': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
