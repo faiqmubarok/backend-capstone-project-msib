@@ -19,16 +19,8 @@ class Project(models.Model):
     type = models.CharField(max_length=20, choices=TYPE_PROJECT, default='agriculture')
     projectImage = models.ImageField(upload_to='projectImages/', blank=True, null=True)
     location = models.CharField(max_length=255)
-    total_funds = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(0)])
-    profit = models.DecimalField(
-        max_digits=5, 
-        decimal_places=2, 
-        validators=[
-            MinValueValidator(0),  # Nilai minimal 0%
-            MaxValueValidator(100) # Nilai maksimal 100%
-        ],
-        help_text="Persentase keuntungan dalam rentang 0-100."
-    )
+    # Warning
+    target_funds = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(0)])
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_available')
     description = models.TextField()
     start_date = models.DateField(blank=True, null=True)

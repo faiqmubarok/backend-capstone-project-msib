@@ -28,7 +28,6 @@ class ProjectDetailView(APIView):
         try:
             # Ambil project berdasarkan id
             project = Project.objects.get(pk=projectId)
-
             
             # Serialize data project
             project_data = ProjectDetailSerializer(project).data
@@ -36,8 +35,9 @@ class ProjectDetailView(APIView):
             # Serialize data farmer yang terkait dengan project
             farmer_data = FarmerSerializer(project.farmer).data
             
-            # Serialize financial reports yang terkait dengan project
-            financial_reports_data = FinancialReportSerializer(project.financial_reports.all(), many=True).data
+            # Ambil 5 laporan keuangan terbaru yang terkait dengan project
+            latest_financial_reports = project.financial_reports.order_by('-uploaded_at')
+            financial_reports_data = FinancialReportSerializer(latest_financial_reports, many=True).data
             
             # Gabungkan semua data dalam satu response
             response_data = {

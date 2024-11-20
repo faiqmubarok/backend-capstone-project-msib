@@ -26,17 +26,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = (
-        'name', 'type', 'farmer', 'status', 'total_funds', 
-        'formatted_profit', 'report_count'
+        'name', 'type', 'farmer', 'status', 'report_count'
     )
     list_filter = ('type', 'status', 'farmer')  # Filter berdasarkan tipe proyek, status, dan petani
     search_fields = ('name', 'location', 'farmer__name')  # Pencarian berdasarkan nama proyek, lokasi, dan nama petani
     ordering = ('-start_date',)  # Urutkan berdasarkan tanggal mulai terbaru
-
-    # Formatkan profit sebagai persentase
-    def formatted_profit(self, obj):
-        return f"{obj.profit}%"
-    formatted_profit.short_description = 'Profit (%)'
 
     # Hitung jumlah laporan keuangan
     def report_count(self, obj):
