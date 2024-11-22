@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import userView
 from .views import projectsView
+from .views import transactionView
 
 urlpatterns = [
     # User
@@ -12,4 +13,7 @@ urlpatterns = [
     # Project
     path('allProject/', projectsView.ProjectListView.as_view(), name='project-list'),
     path('project/<int:projectId>/', projectsView.ProjectDetailView.as_view(), name='project-detail'),
+
+    # Transaction
+    path('topup/', transactionView.TopUpView.as_view(), name='topup'),
 ]
