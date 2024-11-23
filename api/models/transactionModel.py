@@ -35,7 +35,3 @@ class Transaction(models.Model):
 
     class Meta:
         ordering = ['-transaction_date']
-
-
-
-
