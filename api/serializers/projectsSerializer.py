@@ -10,7 +10,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'logo', 'name', 'type_display', 'location','status_display', 'profit']
+        fields = ['id', 'logo', 'name', 'type_display', 'location','status_display', 'profit', 'invested_amount']
 
     def get_status_display(self, obj):
         return obj.get_status_display()

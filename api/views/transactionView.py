@@ -7,13 +7,15 @@ from django.contrib.auth.models import User
 from ..models.projectModel import Project
 from ..models.transactionModel import Transaction
 from ..serializers.getTransactionSerializer import GetTransactionSerializer
+from django.db.models import Sum
+from django.utils.timezone import now
+from ..models.portfolioModel import Portfolio
 
 class TopUpView(APIView):
     def post(self, request):
         serializer = TopupSerializer(data=request.data)
 
         if serializer.is_valid():
-            # Mendapatkan data dari request
             user_id = request.data.get('user_id')
             project_id = request.data.get('project_id')
             amount = request.data.get('amount')
@@ -25,19 +27,46 @@ class TopUpView(APIView):
             except (User.DoesNotExist, Project.DoesNotExist):
                 return Response({"error": "User or Project not found."}, status=status.HTTP_404_NOT_FOUND)
 
-            # Buat transaksi dengan status 'success'
-            transaction = Transaction(
+            # Update total dana terkumpul di Project
+            total_funds = Portfolio.objects.filter(project=project).aggregate(Sum('invested_amount'))['invested_amount__sum'] or 0
+            total_funds += amount
+
+            portfolio = None
+            # Buat atau update Portfolio
+            try:
+                portfolio = Portfolio.objects.get(user=user, project=project)
+                portfolio.invested_amount += amount
+                portfolio.last_updated = now()
+                portfolio.ownership_percentage = ((portfolio.invested_amount + amount) / total_funds) * 100
+                portfolio.save()
+            except Portfolio.DoesNotExist:
+                portfolio = Portfolio.objects.create(
+                    user=user,
+                    project=project,
+                    invested_amount=amount,
+                    ownership_percentage= (amount / total_funds) * 100
+                )
+            
+            # Update ownership_percentage untuk semua portfolio di proyek ini
+            for p in Portfolio.objects.filter(project=project):
+                p.ownership_percentage = (p.invested_amount / total_funds) * 100
+                p.save()
+            
+            project.update_invested_amount()
+            
+            # Buat transaksi baru
+            transaction = Transaction.objects.create(
                 user=user,
                 project=project,
+                portfolio=portfolio,
                 amount=amount,
                 payment_method=payment_method,
-                transaction_type='deposit', 
+                transaction_type='deposit',
                 status='success',
             )
-            transaction.save()
-
+            
             return Response({
-                "message": "Top-up transaction created successfully.",
+                "message": "Top-up transaction and portfolio updated successfully.",
                 "transaction": TopupSerializer(transaction).data
             }, status=status.HTTP_201_CREATED)
         else:

@@ -5,6 +5,7 @@ from .models.projectModel import Project
 from .models.farmerModel import Farmer
 from .models.financialReportModel import FinancialReport
 from .models.transactionModel import Transaction
+from .models.portfolioModel import Portfolio
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
@@ -61,6 +62,15 @@ class TransactionAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'project__name')  # Pencarian berdasarkan username user dan nama project
     ordering = ('-transaction_date',)  # Urutkan berdasarkan tanggal transaksi terbaru
     readonly_fields = ('id', 'transaction_date')  # Jadikan beberapa field readonly
+
+@admin.register(Portfolio)
+class PortfolioAdmin(admin.ModelAdmin):
+    list_display = ('user', 'project', 'ownership_percentage', 'invested_amount', 'created_at', 'last_updated')
+    list_filter = ('user', 'project')  # Filter berdasarkan user dan project
+    search_fields = ('user__username', 'project__name')  # Pencarian berdasarkan username user dan nama project
+    ordering = ('-created_at',)  # Urutkan berdasarkan tanggal pembuatan terbaru
+    readonly_fields = ('created_at', 'last_updated')  # Jadikan beberapa field readonly
+
 
 # Custom admin untuk User Django
 class UserAdmin(admin.ModelAdmin):

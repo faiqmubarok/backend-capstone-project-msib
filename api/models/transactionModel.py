@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.timezone import now
 from django.contrib.auth.models import User
 from .projectModel import Project
+from .portfolioModel import Portfolio
 
 class Transaction(models.Model):
     PAYMENT_METHODS = [
@@ -22,6 +23,7 @@ class Transaction(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, related_name='transactions', null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='transactions')
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)

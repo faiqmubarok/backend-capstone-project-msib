@@ -28,7 +28,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'logo', 'type_display', 'location', 'target_funds', 'status_display', 'description', 'start_date', 'end_date', 'projectImage', 'profit']
+        fields = ['id', 'name', 'logo', 'type_display', 'location', 'target_funds', 'invested_amount', 'status_display', 'description', 'start_date', 'end_date', 'projectImage', 'profit']
     
     def get_status_display(self, obj):
         return obj.get_status_display()
