@@ -2,6 +2,7 @@ from django.urls import path
 from .views import userView
 from .views import projectsView
 from .views import transactionView
+from .views import portfolioView
 
 urlpatterns = [
     # User
@@ -17,4 +18,7 @@ urlpatterns = [
     # Transaction
     path('topup/', transactionView.TopUpView.as_view(), name='topup'),
     path('getTransaction/<int:userId>/', transactionView.userTransactions, name='getTransaction'),
+
+    # Portfolio
+    path('investmentStats/<int:userId>/', portfolioView.InvestmentStatsView.as_view(), name='investmentStats'),
 ]
