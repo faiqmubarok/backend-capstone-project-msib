@@ -6,6 +6,7 @@ from ..models.portfolioModel import Portfolio
 from ..models.transactionModel import Transaction
 from ..models.projectModel import Project
 from django.db.models.functions import TruncMonth
+from datetime import datetime
 
 class InvestmentStatsView(APIView):
     def get(self, request, userId):
@@ -42,7 +43,7 @@ class InvestmentStatsView(APIView):
             profit = total_portfolio_value - total_modal
 
             # Hitung Persentase keuntungan
-            persentage_profit = (profit / total_modal) * 100
+            persentage_profit = (profit / total_modal * 100) if total_modal > 0 else 0
 
             # Ambil semua kategori default
             project_categories = dict(Project.TYPE_PROJECT)
@@ -80,6 +81,18 @@ class InvestmentStatsView(APIView):
                 }
                 for entry in monthly_investment
             ]
+
+            # investment_chart_data.extend([
+            #     {"bulan": "Feb", "investasi": 2000000},
+            #     {"bulan": "Mar", "investasi": 5000000},
+            #     {"bulan": "Apr", "investasi": 7500000},
+            # ])
+
+            # Jika tidak ada data untuk grafik, set ke bulan sekarang
+            if not investment_chart_data:
+                current_month = datetime.now().strftime("%b")  # Nama bulan singkat (misal: "Jan")
+                # Atur data grafik dengan bulan sekarang
+                investment_chart_data = [{"bulan": current_month, "investasi": 0}]
 
             # Response
             return Response({

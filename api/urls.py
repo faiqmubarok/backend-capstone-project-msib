@@ -13,6 +13,9 @@ urlpatterns = [
 
     # Project
     path('allProject/', projectsView.ProjectListView.as_view(), name='project-list'),
+    path('upcoming/', projectsView.UpcomingProjectView.as_view(), name='upcoming-project'),
+    path('topFunds/', projectsView.TopFundsProjectView.as_view(), name='top-funds-project'),
+    path('topProfit/', projectsView.TopProfitProjectView.as_view(), name='top-profit-project'),
     path('project/<int:projectId>/', projectsView.ProjectDetailView.as_view(), name='project-detail'),
 
     # Transaction
