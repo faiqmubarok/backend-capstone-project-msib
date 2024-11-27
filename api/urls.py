@@ -24,4 +24,5 @@ urlpatterns = [
 
     # Portfolio
     path('investmentStats/<int:userId>/', portfolioView.InvestmentStatsView.as_view(), name='investmentStats'),
+    path('getPortfolio/<int:userId>/', portfolioView.PortfolioView.as_view(), name='getPortfolio'),
 ]

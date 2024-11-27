@@ -7,6 +7,7 @@ from ..models.transactionModel import Transaction
 from ..models.projectModel import Project
 from django.db.models.functions import TruncMonth
 from datetime import datetime
+from ..serializers.portfolioSerializer import PortfolioSerializer
 
 class InvestmentStatsView(APIView):
     def get(self, request, userId):
@@ -109,3 +110,31 @@ class InvestmentStatsView(APIView):
             return Response({
                 "error": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class PortfolioView(APIView):
+    def get(self, request, userId):
+        # Ambil portfolio berdasarkan user_id
+        portfolios = Portfolio.objects.filter(user_id=userId).select_related('project')
+        
+        # Jika tidak ada data portfolio untuk user_id
+        if not portfolios.exists():
+            return Response(
+                {
+                    "success": True,  # Jangan gunakan False, karena tidak ada error
+                    "message": "User ini belum memiliki portfolio atau investasi.",
+                    "data": []  # Kirim data kosong
+                },
+                status=status.HTTP_200_OK  # Gunakan status 200 OK, karena bukan error
+            )
+        
+        # Jika data ditemukan
+        serializer = PortfolioSerializer(portfolios, many=True)
+        return Response(
+            {
+                "success": True,
+                "message": "Data portfolio berhasil diambil.",
+                "data": serializer.data
+            },
+            status=status.HTTP_200_OK
+        )
