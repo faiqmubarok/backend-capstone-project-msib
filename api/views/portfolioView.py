@@ -23,20 +23,23 @@ class InvestmentStatsView(APIView):
                 total_value=Sum('invested_amount')
             )['total_value'] or 0
 
-            # Hitung total transaksi masuk (deposit)
+            # Ambil semua ID portfolio milik user
+            portfolio_ids = portfolios.values_list('id', flat=True)
+
+            # Hitung total transaksi masuk (deposit) sesuai dengan portfolio user
             total_deposit = Transaction.objects.filter(
-                user_id=userId, transaction_type='deposit'
+                portfolio_id__in=portfolio_ids, transaction_type='deposit'
             ).aggregate(
                 total_amount=Sum('amount')
             )['total_amount'] or 0
-            
-            # Hitung total transaksi keluar (withdraw)
+
+            # Hitung total transaksi keluar (withdraw) sesuai dengan portfolio user
             total_withdrawal = Transaction.objects.filter(
-                user_id=userId, transaction_type='withdraw'
+                portfolio_id__in=portfolio_ids, transaction_type='withdraw'
             ).aggregate(
                 total_amount=Sum('amount')
             )['total_amount'] or 0
-            
+
             # Hitung total modal (deposit - withdrawal)
             total_modal = total_deposit - total_withdrawal
 

@@ -25,7 +25,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
     def get_profit(self, obj):
         # Ambil transaksi yang terkait dengan portfolio dan project dari user yang sama
         transactions = Transaction.objects.filter(
-            # portfolio=obj,
+            portfolio=obj,
             project=obj.project,
             user=obj.user
         )

@@ -72,6 +72,65 @@ class TopUpView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class WithdrawView(APIView):
+    def post(self, request):
+        serializer = TopupSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user_id = request.data.get('user_id')
+            project_id = request.data.get('project_id')
+            amount = request.data.get('amount')
+            payment_method = request.data.get('payment_method')
+
+            try:
+                user = User.objects.get(id=user_id)
+                project = Project.objects.get(id=project_id)
+            except (User.DoesNotExist, Project.DoesNotExist):
+                return Response({"error": "User or Project not found."}, status=status.HTTP_404_NOT_FOUND)
+            
+            # Update total dana / kurangi di Project
+            total_funds = Portfolio.objects.filter(project=project).aggregate(Sum('invested_amount'))['invested_amount__sum'] or 0
+            total_funds -= amount
+
+            try:
+                portfolio = Portfolio.objects.get(user=user, project=project)
+                
+                portfolio.invested_amount -= amount
+                if portfolio.invested_amount <= 0:
+                    portfolio.delete()
+                    portfolio = None
+                else:
+                    portfolio.ownership_percentage = (portfolio.invested_amount / total_funds) * 100
+                    portfolio.last_updated = now()
+                    portfolio.save()
+            except Portfolio.DoesNotExist:
+                raise ValueError("Portfolio tidak ditemukan untuk pengguna dan proyek ini.")
+            
+            # Update ownership_percentage untuk semua portfolio di proyek ini
+            for p in Portfolio.objects.filter(project=project):
+                p.ownership_percentage = (p.invested_amount / total_funds) * 100
+                p.save()
+            
+            project.update_invested_amount()
+
+            # Buat transaksi baru
+            transaction = Transaction.objects.create(
+                user=user,
+                project=project,
+                portfolio=portfolio,
+                amount=amount,
+                payment_method=payment_method,
+                transaction_type='withdraw',
+                status='success',
+            )
+            
+            return Response({
+                "message": "Withdraw transaction and portfolio updated successfully.",
+                "transaction": TopupSerializer(transaction).data
+            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def userTransactions(request, userId):
     try:

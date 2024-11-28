@@ -5,12 +5,6 @@ from .projectModel import Project
 from .portfolioModel import Portfolio
 
 class Transaction(models.Model):
-    PAYMENT_METHODS = [
-        ('bank_transfer', 'Bank Transfer'),
-        ('e_wallet', 'E-Wallet'),
-        ('credit_card', 'Credit Card'),
-    ]
-
     STATUS_CHOICES = [
         ('pending', 'Menunggu'),
         ('success', 'Berhasil'),
@@ -23,10 +17,10 @@ class Transaction(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, related_name='transactions', null=True, blank=True)
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.SET_NULL, null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='transactions')
     amount = models.DecimalField(max_digits=15, decimal_places=2)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+    payment_method = models.CharField(max_length=100)
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='success')
     transaction_date = models.DateTimeField(default=now)

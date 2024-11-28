@@ -14,7 +14,6 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class GetTransactionSerializer(serializers.ModelSerializer):
     project = ProjectSerializer()
-    payment_method_display = serializers.SerializerMethodField()
     transaction_type_display = serializers.SerializerMethodField()
     status_display = serializers.SerializerMethodField()
 
@@ -24,14 +23,11 @@ class GetTransactionSerializer(serializers.ModelSerializer):
             'id', 
             'project', 
             'amount', 
-            'payment_method_display', 
+            'payment_method',
             'transaction_type_display', 
             'status_display', 
             'transaction_date'
         ]
-
-    def get_payment_method_display(self, obj):
-        return obj.get_payment_method_display()
 
     def get_transaction_type_display(self, obj):
         return obj.get_transaction_type_display()

@@ -20,6 +20,7 @@ urlpatterns = [
 
     # Transaction
     path('topup/', transactionView.TopUpView.as_view(), name='topup'),
+    path('withdraw/', transactionView.WithdrawView.as_view(), name='withdraw'),
     path('getTransaction/<int:userId>/', transactionView.userTransactions, name='getTransaction'),
 
     # Portfolio
