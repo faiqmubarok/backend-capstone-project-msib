@@ -17,7 +17,6 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_DIR = Path.joinpath(BASE_DIR, 'media')
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -25,10 +24,13 @@ MEDIA_DIR = Path.joinpath(BASE_DIR, 'media')
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-_hqwb2i94u$j98t0fw+h3(nk3$e%jv_as-4u1@n*b##%e3f@8q')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS= ["https://web-production-c0d51.up.railway.app"]
+CSRF_TRUSTED_ORIGINS= [
+    "https://web-production-c0d51.up.railway.app",     
+    'http://web-production-c0d51.up.railway.app',  
+]
 
 # Application definition
 
@@ -138,7 +140,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # Media
 MEDIA_ROOT = MEDIA_DIR
@@ -152,8 +160,6 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
 ]
-
-# DEBUG=True
 
 
 # Default primary key field type
