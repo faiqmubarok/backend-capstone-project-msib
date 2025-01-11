@@ -26,10 +26,14 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-_hqwb2i94u$j98t0fw+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS= [
-    "https://web-production-c0d51.up.railway.app",     
-    'http://web-production-c0d51.up.railway.app',  
+ALLOWED_HOSTS = ['web-production-c0d51.up.railway.app']
+
+CORS_ALLOWED_ORIGINS = [
+    "https://web-production-c0d51.up.railway.app",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://web-production-c0d51.up.railway.app",
 ]
 
 # Application definition
@@ -151,15 +155,6 @@ STATICFILES_DIRS = [
 # Media
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
-
-# CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", 
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-]
 
 
 # Default primary key field type
