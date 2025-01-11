@@ -30,10 +30,12 @@ ALLOWED_HOSTS = ['web-production-c0d51.up.railway.app']
 
 CORS_ALLOWED_ORIGINS = [
     "https://web-production-c0d51.up.railway.app",
+    "https://patani-mocha.vercel.app/",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://web-production-c0d51.up.railway.app",
+    "https://patani-mocha.vercel.app/",
 ]
 
 # Application definition
