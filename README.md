@@ -151,7 +151,7 @@ MIDDLEWARE = [
 
 ## 📧 Kontak
 
-Jika ada pertanyaan, hubungi kami di [email@example.com](mailto:email@example.com).
+Jika ada pertanyaan, hubungi kami di [faiqmubarok@gmail.com](mailto:faiqmubarok@gmail.com).
 
 ---
 
